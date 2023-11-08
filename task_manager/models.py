@@ -30,6 +30,7 @@ class Worker(AbstractUser):
 
 class Team(models.Model):
     name = models.CharField(max_length=255, unique=True)
+    team_members = models.ManyToManyField(Worker, related_name="team_members")
 
 
 class Task(models.Model):

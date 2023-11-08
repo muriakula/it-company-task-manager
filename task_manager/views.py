@@ -1,4 +1,6 @@
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
+from django.views import generic
 
 from task_manager import models
 
@@ -16,3 +18,9 @@ def index(request):
     }
     # Page from the theme
     return render(request, 'pages/index.html', context=context)
+
+
+class TeamListView(generic.ListView):
+    model = models.Team
+    context_object_name = "team_list"
+    template_name = "pages/team_list.html"
