@@ -1,5 +1,6 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
+from django.urls import reverse_lazy
 from django.views import generic
 
 from task_manager import models
@@ -24,3 +25,10 @@ class TeamListView(generic.ListView):
     model = models.Team
     context_object_name = "team_list"
     template_name = "pages/team_list.html"
+
+
+class TeamCreateView(generic.CreateView):
+    model = models.Team
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:team_list")
+    template_name = "pages/team_form.html"
