@@ -45,3 +45,33 @@ class TeamDeleteView(generic.DeleteView):
     model = models.Team
     success_url = reverse_lazy("task_manager:team_list")
     template_name = "pages/team_confirm_delete.html"
+
+
+class WorkerListView(generic.ListView):
+    model = models.Worker
+    context_object_name = "workers_list"
+    template_name = "pages/workers_list.html"
+
+
+class WorkerDetailView(generic.DetailView):
+    model = models.Worker
+    queryset = models.Worker.objects.all()
+    template_name = "pages/user-profile.html"
+
+
+class WorkerCreateView(generic.CreateView):
+    model = models.Worker
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:worker_detail")
+    template_name = "pages/user-profile.html"
+
+
+class WorkerUpdateView(generic.UpdateView):
+    model = models.Worker
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:worker_detail")
+    template_name = "pages/user-form.html"
+
+    def get_object(self, queryset=None):
+        return models.Worker.objects.get(pk=self.kwargs["pk"])
+
