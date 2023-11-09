@@ -32,3 +32,16 @@ class TeamCreateView(generic.CreateView):
     fields = "__all__"
     success_url = reverse_lazy("task_manager:team_list")
     template_name = "pages/team_form.html"
+
+
+class TeamUpdateView(generic.UpdateView):
+    model = models.Team
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:team_list")
+    template_name = "pages/team_form.html"
+
+
+class TeamDeleteView(generic.DeleteView):
+    model = models.Team
+    success_url = reverse_lazy("task_manager:team_list")
+    template_name = "pages/team_confirm_delete.html"

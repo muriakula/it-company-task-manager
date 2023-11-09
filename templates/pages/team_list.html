@@ -30,6 +30,8 @@
                 <th>#</th>
                 <th>Team Name</th>
                 <th>Team Members</th>
+                <th>Update</th>
+                <th>Delete</th>
               </tr>
               </thead>
               {% for team in team_list %}
@@ -38,6 +40,8 @@
                   <td>{{ team.id }}</td>
                   <td><a href="">{{ team.name }}</a></td>
                   <td>{{ team.team_members.count }}</td>
+                  <td><a href="{% url 'task_manager:team_update' pk=team.pk %}">✏️</a></td>
+                  <td><a href="{% url 'task_manager:team_delete' pk=team.pk %}">❌</a></td>
                 </tr>
                 </tbody>
               {% endfor %}
