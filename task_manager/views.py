@@ -85,3 +85,9 @@ class WorkerDeleteView(generic.DeleteView):
     model = models.Worker
     success_url = reverse_lazy("task_manager:worker_list")
     template_name = "pages/worker_confirm_delete.html"
+
+
+class PositionListView(generic.ListView):
+    model = models.Position
+    context_object_name = "positions_list"
+    template_name = "pages/positions_list.html"

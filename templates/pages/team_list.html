@@ -40,8 +40,14 @@
                   <td>{{ team.id }}</td>
                   <td><a href="">{{ team.name }}</a></td>
                   <td>{{ team.team_members.count }}</td>
-                  <td><a href="{% url 'task_manager:team_update' pk=team.pk %}">✏️</a></td>
-                  <td><a href="{% url 'task_manager:team_delete' pk=team.pk %}">❌</a></td>
+                  <td><a href="{% url 'task_manager:team_update' pk=team.pk %}"style="text-decoration: none; color: white">
+                      <button type="button" class="btn btn-primary btn-sm rounded m-0 float-end">
+                        <i class="feather icon-edit"></i>
+                      </button></a></td>
+                  <td><a href="{% url 'task_manager:team_delete' pk=team.pk %}"style="text-decoration: none; color: white">
+                      <button type="button" class="btn btn-primary btn-sm rounded m-0 float-end">
+                        <i class="feather icon-trash"></i>
+                      </button></a></td>
                 </tr>
                 </tbody>
               {% endfor %}
