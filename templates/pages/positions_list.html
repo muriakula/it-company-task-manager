@@ -40,13 +40,13 @@
                     <td>{{ position.id }}</td>
                     <td><a href="">{{ position.name }}</a></td>
                     <td>{{ position.worker_set.count }}</td>
-                    <td><a href=""
+                    <td><a href="{% url "task_manager:position_update" pk=position.pk %}"
                            style="text-decoration: none; color: white">
                       <button type="button" class="btn btn-primary btn-sm rounded m-0 float-end">
                         <i class="feather icon-edit"></i>
                       </button>
                     </a></td>
-                    <td><a href=""
+                    <td><a href="{% url "task_manager:position_delete" pk=position.pk %}"
                            style="text-decoration: none; color: white">
                       <button type="button" class="btn btn-primary btn-sm rounded m-0 float-end">
                         <i class="feather icon-trash"></i>
@@ -66,7 +66,7 @@
         <div class="card-body">
           <h5 class="card-title">Create New Position</h5>
           <p class="card-text">Click the button below to create a new position.</p>
-          <a href="" class="btn btn-primary">Create Team</a>
+          <a href="{% url "task_manager:position_create" %}" class="btn btn-primary">Create Position</a>
         </div>
       </div>
     </div>

@@ -12,11 +12,13 @@ def index(request):
     num_workers = models.Worker.objects.count()
     num_tasks = models.Task.objects.count()
     num_completed_tasks = models.Task.objects.filter(is_completed=True).count()
+    num_teams = models.Team.objects.count()
 
     context = {
         "num_workers": num_workers,
         "num_tasks": num_tasks,
-        "num_completed_tasks": num_completed_tasks
+        "num_completed_tasks": num_completed_tasks,
+        "num_teams": num_teams
     }
     # Page from the theme
     return render(request, 'pages/index.html', context=context)
@@ -91,3 +93,23 @@ class PositionListView(generic.ListView):
     model = models.Position
     context_object_name = "positions_list"
     template_name = "pages/positions_list.html"
+
+
+class PositionCreateView(generic.CreateView):
+    model = models.Position
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:position_list")
+    template_name = "pages/position_form.html"
+
+
+class PositionUpdateView(generic.UpdateView):
+    model = models.Position
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:position_list")
+    template_name = "pages/position_form.html"
+
+
+class PositionDeleteView(generic.DeleteView):
+    model = models.Position
+    success_url = reverse_lazy("task_manager:position_list")
+    template_name = "pages/position_confirm_delete.html"
