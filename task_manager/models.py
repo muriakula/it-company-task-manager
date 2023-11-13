@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
 from django.db.models.signals import pre_save
 from django.dispatch import receiver
+from django.utils import timezone
 
 
 class TaskType(models.Model):
@@ -26,6 +27,11 @@ class Worker(AbstractUser):
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.position})"
+
+    def save(self, *args, **kwargs):
+        if not self.date_joined:
+            self.date_joined = timezone.now()
+        super().save(*args, **kwargs)
 
 
 class Team(models.Model):

@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.views import generic
 
 from task_manager import models
+from task_manager.forms import WorkerForm, WorkerCreationForm
 
 
 # Create your views here.
@@ -61,17 +62,26 @@ class WorkerDetailView(generic.DetailView):
 
 class WorkerCreateView(generic.CreateView):
     model = models.Worker
-    fields = "__all__"
-    success_url = reverse_lazy("task_manager:worker_detail")
-    template_name = "pages/user-profile.html"
+    form_class = WorkerCreationForm
+    template_name = "pages/user-form.html"
+
+    def get_success_url(self):
+        return reverse_lazy("task_manager:worker_detail", args=[self.object.pk])
 
 
 class WorkerUpdateView(generic.UpdateView):
     model = models.Worker
-    fields = "__all__"
-    success_url = reverse_lazy("task_manager:worker_detail")
+    form_class = WorkerForm
     template_name = "pages/user-form.html"
 
     def get_object(self, queryset=None):
         return models.Worker.objects.get(pk=self.kwargs["pk"])
 
+    def get_success_url(self):
+        return reverse_lazy("task_manager:worker_detail", args=[self.object.pk])
+
+
+class WorkerDeleteView(generic.DeleteView):
+    model = models.Worker
+    success_url = reverse_lazy("task_manager:worker_list")
+    template_name = "pages/worker_confirm_delete.html"

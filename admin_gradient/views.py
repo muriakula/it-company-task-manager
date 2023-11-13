@@ -72,10 +72,6 @@ def tbl_bootstrap(request):
 def chart_apex(request):
     return render(request, 'pages/chart-apex.html')
 
-@login_required(login_url='/accounts/auth-signin')
-def map_google(request):
-    return render(request, 'pages/map-google.html')
-
 # Pages
 
 @login_required(login_url='/accounts/auth-signin')
