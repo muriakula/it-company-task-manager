@@ -1,4 +1,5 @@
 {% extends 'layouts/auth_base.html' %}
+{% load crispy_forms_filters %}
 {% load static %}
 {% block content %}
 <!-- [ auth-signup ] start -->
@@ -12,15 +13,7 @@
 						<h4 class="mb-3 f-w-400">Sign up</h4>
 						<form  method="post">
 							{% csrf_token %}
-							{% for field in form %}
-							<div class="input-group mb-3">
-								<span class="input-group-text">
-									<i class="feather {% if field.name == 'username' %} icon-user {% else %} {% if field.name == 'email' %} icon-mail {% else %} icon-lock {% endif %} {% endif %}"></i>
-								</span>
-								{{field}}
-							</div>
-							<small class="text-danger">{{ field.errors }}</small>
-							{% endfor %}
+                {{ form|crispy }}
 							<div class="form-group text-left mt-2">
 								<div class="checkbox checkbox-primary d-inline">
 									<input type="checkbox" name="checkbox-fill-2" id="checkbox-fill-2">
@@ -28,7 +21,7 @@
 								</div>
 							</div>
 							<button class="btn btn-primary btn-block mt-2 mb-4">Sign up</button>
-							<p class="mb-2">Already have an account? <a href="{% url 'auth_signin' %}" class="f-w-400">Signin</a></p>
+							<p class="mb-2">Already have an account? <a href="{% url 'task_manager:auth_signin' %}" class="f-w-400">Signin</a></p>
 						</form>
 					</div>
 				</div>

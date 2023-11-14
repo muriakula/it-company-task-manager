@@ -8,15 +8,7 @@
         class="feather icon-home"></i></span><span class="pcoded-mtext">Dashboard</span></a>
   </li>
 
-  {% if not request.user.is_authenticated %}
-    <li class="nav-item pcoded-hasmenu">
-      <a href="#" class="nav-link "><span class="pcoded-micon"><i class="feather icon-lock"></i></span><span
-          class="pcoded-mtext">Authentication</span></a>
-      <ul class="pcoded-submenu">
-        {#      <li><a href="{% url 'auth_signin' %}" >Sign IN</a></li>#}
-        {#      <li><a href="{% url 'auth_signup' %}" >Sign UP</a></li>#}
-      </ul>
-    </li>
+  {% if request.user.is_authenticated %}
     <li class="nav-item pcoded-hasmenu">
       <a class="nav-link">
         <span class="pcoded-micon"><i class="feather icon-check-square"></i></span>

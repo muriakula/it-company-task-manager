@@ -1,10 +1,11 @@
+from django.contrib.auth import views as auth_views, authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.views import generic
+from django.views import generic, View
 
 from task_manager import models
-from task_manager.forms import WorkerForm, WorkerCreationForm
+from task_manager.forms import WorkerForm, WorkerCreationForm, CustomAuthenticationForm
 
 
 # Create your views here.
@@ -139,3 +140,22 @@ class TaskTypeDeleteView(generic.DeleteView):
     model = models.TaskType
     success_url = reverse_lazy("task_manager:task_type_list")
     template_name = "pages/task_type_confirm_delete.html"
+
+
+class AuthSigninView(View):
+    template_name = 'auth_signin.html'
+
+    def get(self, request, *args, **kwargs):
+        form = CustomAuthenticationForm()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request, *args, **kwargs):
+        form = CustomAuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(request, username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect('task_manager:index')
+        return render(request, self.template_name, {'form': form})

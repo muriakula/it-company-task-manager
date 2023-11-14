@@ -107,6 +107,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+AUTH_USER_MODEL = 'task_manager.Worker'
+LOGIN_URL = 'task_manager:auth_signin'
+LOGOUT_URL = 'task_manager:auth_signout'
+LOGIN_REDIRECT_URL = 'task_manager:index'
+
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 

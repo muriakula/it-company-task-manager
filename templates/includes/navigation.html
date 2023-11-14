@@ -33,19 +33,20 @@
                         <div class="pro-head">
                             <img src="{% static 'assets/images/user/avatar-1.jpg' %}" class="img-radius"
                                 alt="User-Profile-Image">
-                            <span>John Doe</span>
+                          {{ user.first_name }} {{ user.last_name }}
                         </div>
+
                         <ul class="pro-body">
-                            <li class="bg-transparent mb-2 ms-3">
-                                <a target="_blank" href="https://appseed.us/support/">
-                                    <span class="badge bg-primary">Support</span>
-                                </a>
-                            </li>
+                              {% if user.is_authenticated %}
+                                <li class="bg-transparent mb-2 ms-3"><a target="_blank" href="{{ user.get_absolute_url }}"><span class="badge bg-primary">{{ user.get_username }}</span></a></li>
+                              {% else %}
+                                <li class="bg-transparent mb-2 ms-3"><a href="{% url 'login'%}?next={{request.path}}">Login</a></li>
+                              {% endif %}
                             {% if request.user.is_authenticated %}
                                 {% if request.user.is_superuser %}
                                 <li><a href="{% url 'admin:password_change' %}" class="dropdown-item">
                                     <i class="feather icon-lock"></i> Change Password</a></li>
-                                <li><a href="{% url 'admin:logout' %}" class="dropdown-item"><i
+                                <li><a href="{% url 'logout' %}" class="dropdown-item"><i
                                             class="feather icon-lock"></i> Logout</a></li>
                                 {% else %}
                                 <li><a href="{% url 'password_change' %}" class="dropdown-item">
