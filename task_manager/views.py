@@ -113,3 +113,29 @@ class PositionDeleteView(generic.DeleteView):
     model = models.Position
     success_url = reverse_lazy("task_manager:position_list")
     template_name = "pages/position_confirm_delete.html"
+
+
+class TaskTypeListView(generic.ListView):
+    model = models.TaskType
+    context_object_name = "task_type_list"
+    template_name = "pages/task_type_list.html"
+
+
+class TaskTypeCreateView(generic.CreateView):
+    model = models.TaskType
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:task_type_list")
+    template_name = "pages/task_type_form.html"
+
+
+class TaskTypeUpdateView(generic.UpdateView):
+    model = models.TaskType
+    fields = "__all__"
+    success_url = reverse_lazy("task_manager:task_type_list")
+    template_name = "pages/task_type_form.html"
+
+
+class TaskTypeDeleteView(generic.DeleteView):
+    model = models.TaskType
+    success_url = reverse_lazy("task_manager:task_type_list")
+    template_name = "pages/task_type_confirm_delete.html"
