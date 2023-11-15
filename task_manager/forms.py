@@ -24,3 +24,23 @@ class CustomAuthenticationForm(AuthenticationForm):
     class Meta:
         model = Worker
         fields = ['username', 'password']
+
+
+class TeamSearchForm(forms.Form):
+    name = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(attrs={"placeholder": "Search"})
+    )
+
+
+class WorkerSearchForm(forms.Form):
+    search_query = forms.CharField(
+        max_length=255,
+        required=False,
+        label="",
+        widget=forms.TextInput(
+            attrs={"placeholder": "Search"}
+        )
+    )

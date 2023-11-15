@@ -1,11 +1,13 @@
 from django.contrib.auth import views as auth_views, authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Q
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views import generic, View
 
 from task_manager import models
-from task_manager.forms import WorkerForm, WorkerCreationForm, CustomAuthenticationForm
+from task_manager.forms import WorkerForm, WorkerCreationForm, CustomAuthenticationForm, TeamSearchForm, \
+    WorkerSearchForm
 
 
 # Create your views here.
@@ -21,7 +23,6 @@ def index(request):
         "num_completed_tasks": num_completed_tasks,
         "num_teams": num_teams
     }
-    # Page from the theme
     return render(request, 'pages/index.html', context=context)
 
 
@@ -29,6 +30,21 @@ class TeamListView(generic.ListView):
     model = models.Team
     context_object_name = "team_list"
     template_name = "pages/team_list.html"
+    form_class = TeamSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_form"] = self.form_class(self.request.GET)
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        form = self.form_class(self.request.GET)
+        if form.is_valid():
+            name = form.cleaned_data.get("name")
+            if name:
+                queryset = queryset.filter(name__icontains=name)
+        return queryset
 
 
 class TeamCreateView(generic.CreateView):
@@ -55,6 +71,23 @@ class WorkerListView(generic.ListView):
     model = models.Worker
     context_object_name = "workers_list"
     template_name = "pages/workers_list.html"
+    form_class = WorkerSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_form"] = self.form_class(self.request.GET)
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        form = self.form_class(self.request.GET)
+        if form.is_valid():
+            search_query = form.cleaned_data.get("search_query")
+            if search_query:
+                queryset = queryset.filter(
+                    Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query)
+                )
+        return queryset
 
 
 class WorkerDetailView(generic.DetailView):
