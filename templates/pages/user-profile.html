@@ -114,12 +114,9 @@
               </div>
             </div>
             <div class="form-group row">
-              <label class="col-sm-3 col-form-label font-weight-bolder">Teams</label>
+              <label class="col-sm-3 col-form-label font-weight-bolder">Team</label>
               <div class="col-sm-9">
-                {% for team in worker.team_members.all %}
-                  {{ team.name }}
-                  {% if not forloop.last %}<br> {% endif %}
-                {% endfor %}
+                {{worker.team.name}}
               </div>
             </div>
             <div class="form-group row">

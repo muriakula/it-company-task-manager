@@ -1,13 +1,20 @@
-from django.contrib.auth import views as auth_views, authenticate, login
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.urls import reverse_lazy
 from django.views import generic, View
 
 from task_manager import models
-from task_manager.forms import WorkerForm, WorkerCreationForm, CustomAuthenticationForm, TeamSearchForm, \
-    WorkerSearchForm
+from task_manager.forms import (WorkerForm,
+                                WorkerCreationForm,
+                                CustomAuthenticationForm,
+                                TeamSearchForm,
+                                WorkerSearchForm,
+                                TaskSearchForm,
+                                TaskForm,
+                                AddWorkerForm)
 
 
 # Create your views here.
@@ -192,3 +199,65 @@ class AuthSigninView(View):
                 login(request, user)
                 return redirect('task_manager:index')
         return render(request, self.template_name, {'form': form})
+
+
+class TaskListView(generic.ListView):
+    model = models.Task
+    context_object_name = "task_list"
+    template_name = "pages/task_list.html"
+    form_class = TaskSearchForm
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_form"] = self.form_class(self.request.GET)
+        return context
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        form = self.form_class(self.request.GET)
+        if form.is_valid():
+            search_query = form.cleaned_data.get("search_query")
+            if search_query:
+                queryset = queryset.filter(
+                    Q(task_type__name__icontains=search_query) | Q(name__icontains=search_query)
+                )
+        return queryset
+
+
+class TaskCreateView(generic.CreateView):
+    model = models.Task
+    form_class = TaskForm
+    success_url = reverse_lazy("task_manager:task_list")
+    template_name = "pages/task_form.html"
+
+
+class TaskUpdateView(generic.UpdateView):
+    model = models.Task
+    success_url = reverse_lazy("task_manager:task_list")
+    template_name = "pages/task_form.html"
+    form_class = TaskForm
+
+
+class TaskDeleteView(generic.DeleteView):
+    model = models.TaskType
+    success_url = reverse_lazy("task_manager:task_type_list")
+    template_name = "pages/task_confirm_delete.html"
+
+
+class AddWorkerToTaskView(View):
+    template_name = "pages/add_worker_to_task.html"
+    success_url = reverse_lazy("task_manager:task_list")
+
+    def get(self, request, task_id, *args, **kwargs):
+        task = get_object_or_404(models.Task, id=task_id)
+        form = AddWorkerForm(instance=task)
+        return render(request, self.template_name, {'form': form, 'task': task})
+
+    def post(self, request, task_id, *args, **kwargs):
+        task = get_object_or_404(models.Task, id=task_id)
+        form = AddWorkerForm(request.POST, instance=task)
+        if form.is_valid():
+            workers = form.cleaned_data['workers']
+            task.workers.add(*workers)
+            return HttpResponseRedirect(self.success_url)
+        return render(request, self.template_name, {'form': form, 'task': task})

@@ -12,7 +12,32 @@ class TaskType(models.Model):
         return f"{self.name}"
 
 
+class Task(models.Model):
+    PRIORITY_CHOICES = (
+        ('low', 'Low Priority'),
+        ('medium', 'Medium Priority'),
+        ('high', 'High Priority'),
+    )
+    name = models.CharField(max_length=255, unique=False)
+    description = models.TextField()
+    deadline = models.DateField()
+    is_completed = models.BooleanField()
+    priority = models.CharField(
+        max_length=10,
+        choices=PRIORITY_CHOICES,
+        default='medium',
+    )
+    task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
+
+
 class Position(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return f"{self.name}"
+
+
+class Team(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
     def __str__(self):
@@ -21,6 +46,8 @@ class Position(models.Model):
 
 class Worker(AbstractUser):
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
+    task = models.ManyToManyField(Task, blank=True, related_name='workers')
+    team = models.ForeignKey(Team, blank=True, on_delete=models.SET_NULL, null=True)
 
     groups = models.ManyToManyField(Group, related_name="team")
     user_permissions = models.ManyToManyField(Permission, related_name="workers_permissions")
@@ -32,34 +59,3 @@ class Worker(AbstractUser):
         if not self.date_joined:
             self.date_joined = timezone.now()
         super().save(*args, **kwargs)
-
-
-class Team(models.Model):
-    name = models.CharField(max_length=255, unique=True)
-    team_members = models.ManyToManyField(Worker, related_name="team_members")
-
-
-class Task(models.Model):
-    PRIORITY_CHOICES = (
-        ('low', 'Low Priority'),
-        ('medium', 'Medium Priority'),
-        ('high', 'High Priority'),
-    )
-    name = models.CharField(max_length=255, unique=False)
-    description = models.TextField()
-    deadline = models.DateTimeField()
-    is_completed = models.BooleanField()
-    priority = models.CharField(
-        max_length=10,
-        choices=PRIORITY_CHOICES,
-        default='medium',
-    )
-    task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
-    team = models.ManyToManyField(Worker, related_name="teams")
-    assignees = models.ManyToManyField(Worker, related_name="workers")
-
-
-@receiver(pre_save, sender=Task)
-def add_workers_from_team(sender, instance, **kwargs):
-    if instance.team:
-        instance.assignees.add(*instance.team.worker_set.all())

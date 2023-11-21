@@ -21,5 +21,10 @@ urlpatterns = [
     path("tasktype/create/", views.TaskTypeCreateView.as_view(), name="task_type_create"),
     path("tasktype/<int:pk>/update/", views.TaskTypeUpdateView.as_view(), name="task_type_update"),
     path("tasktype/<int:pk>/delete/", views.TaskTypeDeleteView.as_view(), name="task_type_delete"),
+    path("tasks/", views.TaskListView.as_view(), name="task_list"),
+    path("tasks/create/", views.TaskCreateView.as_view(), name="task_create"),
+    path("tasks/<int:pk>/update/", views.TaskUpdateView.as_view(), name="task_update"),
+    path("tasks/<int:pk>/delete/", views.TaskDeleteView.as_view(), name="task_delete"),
+    path("tasks/<int:task_id>/add_worker/", views.AddWorkerToTaskView.as_view(), name="add_worker_to_task"),
 ]
 app_name = "task_manager"
