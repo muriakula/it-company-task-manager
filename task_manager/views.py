@@ -258,6 +258,6 @@ class AddWorkerToTaskView(View):
         form = AddWorkerForm(request.POST, instance=task)
         if form.is_valid():
             workers = form.cleaned_data['workers']
-            task.workers.add(*workers)
+            task.workers.set(workers)
             return HttpResponseRedirect(self.success_url)
         return render(request, self.template_name, {'form': form, 'task': task})

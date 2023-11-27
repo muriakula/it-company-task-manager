@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
 from django.forms import ModelMultipleChoiceField
 
-from .models import Worker, Task
+from .models import Worker, Task, Team
 
 
 class WorkerCreationForm(UserCreationForm):
@@ -76,28 +76,44 @@ class AddWorkerForm(forms.ModelForm):
         super(AddWorkerForm, self).__init__(*args, **kwargs)
         instance = kwargs.get("instance")
 
-        if instance:
-            initial_workers = instance.workers.all()
-            self.fields["workers"] = forms.ModelMultipleChoiceField(
-                queryset=Worker.objects.all(),
+        self.fields["workers_no_team"] = forms.ModelMultipleChoiceField(
+            queryset=Worker.objects.filter(team__isnull=True),
+            widget=forms.CheckboxSelectMultiple,
+            label="Workers without a Team",
+            required=False
+        )
+
+        teams = Team.objects.all()
+        for team in teams:
+            team_workers = Worker.objects.filter(team=team)
+            field_name = f"workers_{team.id}"
+
+            self.fields[field_name] = forms.ModelMultipleChoiceField(
+                queryset=team_workers,
                 widget=forms.CheckboxSelectMultiple,
-                initial=initial_workers,
-            )
-        else:
-            self.fields["workers"] = forms.ModelMultipleChoiceField(
-                queryset=Worker.objects.all(),
-                widget=forms.CheckboxSelectMultiple,
+                label=f"Workers in {team.name}",
+                required=False
             )
 
-    def clean_workers(self):
-        workers = self.cleaned_data.get("workers", [])
-        instance = self.instance
+            if instance:
+                initial_workers = instance.workers.filter(team=team)
+                self.fields[field_name].initial = initial_workers
 
-        if instance:
-            current_workers = instance.workers.all()
+        self.fields["select_all_team"] = forms.BooleanField(
+            required=False,
+            initial=False,
+            widget=forms.CheckboxInput(attrs={"class": "select-all-team"})
+        )
 
-            removed_workers = current_workers.exclude(id__in=workers)
+    def clean(self):
+        cleaned_data = super().clean()
 
-            instance.workers.remove(*removed_workers)
+        workers_no_team = cleaned_data.get("workers_no_team", [])
+        cleaned_data["workers"] = list(set(cleaned_data.get("workers", [])) | set(workers_no_team))
 
-        return workers
+        for team in Team.objects.all():
+            field_name = f"workers_{team.id}"
+            workers = cleaned_data.get(field_name, [])
+            cleaned_data["workers"] += list(set(workers))
+
+        return cleaned_data

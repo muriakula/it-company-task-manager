@@ -1,10 +1,28 @@
 {% extends "layouts/base.html" %}
-{% load crispy_forms_filters %}
 
 {% block content %}
-<form method="post">
+  <form method="post" action="{% url "task_manager:add_worker_to_task" task_id=task.pk %}">
     {% csrf_token %}
-    {{ form.workers }}
+    {{ form.as_p }}
     <input type="submit" value="Add Workers to Task" class="btn btn-primary">
-</form>
+  </form>
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+          var selectAllTeamCheckbox = document.querySelector('.select-all-team');
+          if (selectAllTeamCheckbox) {
+              selectAllTeamCheckbox.addEventListener('change', function () {
+                  var teamCheckboxes = document.querySelectorAll('.select-all-team:checked');
+                  teamCheckboxes.forEach(function (checkbox) {
+                      var teamId = checkbox.getAttribute('data-team-id');
+                      if (teamId) {
+                          var teamWorkersCheckboxes = document.querySelectorAll('.team-' + teamId + ' input[type="checkbox"]');
+                          teamWorkersCheckboxes.forEach(function (workerCheckbox) {
+                              workerCheckbox.checked = checkbox.checked;
+                          });
+                      }
+                  });
+              });
+          }
+      });
+  </script>
 {% endblock %}
