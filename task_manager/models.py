@@ -1,7 +1,5 @@
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.db import models
-from django.db.models.signals import pre_save
-from django.dispatch import receiver
 from django.utils import timezone
 
 
@@ -47,10 +45,12 @@ class Team(models.Model):
 class Worker(AbstractUser):
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
     task = models.ManyToManyField(Task, blank=True, related_name='workers')
-    team = models.ForeignKey(Team, blank=True, on_delete=models.SET_NULL, null=True)
+    team = models.ForeignKey(Team, blank=True,
+                             on_delete=models.SET_NULL, null=True)
 
     groups = models.ManyToManyField(Group, related_name="team")
-    user_permissions = models.ManyToManyField(Permission, related_name="workers_permissions")
+    user_permissions = models.ManyToManyField(
+        Permission, related_name="workers_permissions")
 
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.position})"

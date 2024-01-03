@@ -106,7 +106,8 @@ class WorkerListView(generic.ListView):
             search_query = form.cleaned_data.get("search_query")
             if search_query:
                 queryset = queryset.filter(
-                    Q(first_name__icontains=search_query) | Q(last_name__icontains=search_query)
+                    Q(first_name__icontains=search_query)
+                    | Q(last_name__icontains=search_query)
                 )
         return queryset
 
@@ -123,7 +124,10 @@ class WorkerCreateView(generic.CreateView):
     template_name = "pages/user-form.html"
 
     def get_success_url(self):
-        return reverse_lazy("task_manager:worker_detail", args=[self.object.pk])
+        return reverse_lazy(
+            "task_manager:worker_detail",
+            args=[self.object.pk]
+        )
 
 
 class WorkerUpdateView(generic.UpdateView):
@@ -135,7 +139,10 @@ class WorkerUpdateView(generic.UpdateView):
         return models.Worker.objects.get(pk=self.kwargs["pk"])
 
     def get_success_url(self):
-        return reverse_lazy("task_manager:worker_detail", args=[self.object.pk])
+        return reverse_lazy(
+            "task_manager:worker_detail",
+            args=[self.object.pk]
+        )
 
 
 class WorkerDeleteView(generic.DeleteView):
@@ -233,7 +240,8 @@ class TaskListView(generic.ListView):
             search_query = form.cleaned_data.get("search_query")
             if search_query:
                 queryset = queryset.filter(
-                    Q(task_type__name__icontains=search_query) | Q(name__icontains=search_query)
+                    Q(task_type__name__icontains=search_query)
+                    | Q(name__icontains=search_query)
                 )
         return queryset
 
@@ -265,7 +273,8 @@ class AddWorkerToTaskView(View):
     def get(self, request, task_id, *args, **kwargs):
         task = get_object_or_404(models.Task, id=task_id)
         form = AddWorkerForm(instance=task)
-        return render(request, self.template_name, {'form': form, 'task': task})
+        return render(request, self.template_name,
+                      {'form': form, 'task': task})
 
     def post(self, request, task_id, *args, **kwargs):
         task = get_object_or_404(models.Task, id=task_id)
@@ -274,4 +283,5 @@ class AddWorkerToTaskView(View):
             workers = form.cleaned_data['workers']
             task.workers.set(workers)
             return HttpResponseRedirect(self.success_url)
-        return render(request, self.template_name, {'form': form, 'task': task})
+        return render(request, self.template_name,
+                      {'form': form, 'task': task})

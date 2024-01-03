@@ -1,6 +1,7 @@
 from django import forms
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, AuthenticationForm
-from django.forms import ModelMultipleChoiceField
+from django.contrib.auth.forms import (UserCreationForm,
+                                       UserChangeForm,
+                                       AuthenticationForm)
 
 from .models import Worker, Task, Team
 
@@ -18,7 +19,8 @@ class WorkerCreationForm(UserCreationForm):
 class WorkerForm(UserChangeForm):
     class Meta:
         model = Worker
-        exclude = ["user_permissions", "groups", "is_superuser", "last_login", "is_staff", "date_joined"]
+        exclude = ["user_permissions", "groups", "is_superuser",
+                   "last_login", "is_staff", "date_joined"]
 
 
 class CustomAuthenticationForm(AuthenticationForm):
@@ -109,7 +111,9 @@ class AddWorkerForm(forms.ModelForm):
         cleaned_data = super().clean()
 
         workers_no_team = cleaned_data.get("workers_no_team", [])
-        cleaned_data["workers"] = list(set(cleaned_data.get("workers", [])) | set(workers_no_team))
+        cleaned_data["workers"] = list(
+            set(cleaned_data.get("workers", [])) | set(workers_no_team)
+        )
 
         for team in Team.objects.all():
             field_name = f"workers_{team.id}"
