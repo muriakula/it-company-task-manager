@@ -48,10 +48,6 @@ class Worker(AbstractUser):
     team = models.ForeignKey(Team, blank=True,
                              on_delete=models.SET_NULL, null=True)
 
-    groups = models.ManyToManyField(Group, related_name="team")
-    user_permissions = models.ManyToManyField(
-        Permission, related_name="workers_permissions")
-
     def __str__(self):
         return f"{self.first_name} {self.last_name} ({self.position})"
 
