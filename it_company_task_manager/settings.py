@@ -36,7 +36,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'task_manager',
-    'admin_gradient',
     'crispy_forms',
     "crispy_bootstrap5",
 ]
@@ -66,9 +65,6 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            'libraries': {
-                'admin_gradient': 'admin_gradient.templatetags.admin_gradient',
-            },
         },
     },
 ]
