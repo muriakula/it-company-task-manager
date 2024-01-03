@@ -59,3 +59,13 @@ class Worker(AbstractUser):
         if not self.date_joined:
             self.date_joined = timezone.now()
         super().save(*args, **kwargs)
+
+
+class VisitorCounter(models.Model):
+    count = models.IntegerField(default=0)
+
+
+def increment_unique_visitors():
+    counter, created = VisitorCounter.objects.get_or_create(pk=1)
+    counter.count += 1
+    counter.save()

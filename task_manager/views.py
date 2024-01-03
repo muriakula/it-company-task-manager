@@ -1,5 +1,6 @@
+import uuid
+
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
@@ -15,10 +16,18 @@ from task_manager.forms import (WorkerForm,
                                 TaskSearchForm,
                                 TaskForm,
                                 AddWorkerForm)
+from task_manager.models import increment_unique_visitors, VisitorCounter
 
 
 # Create your views here.
 def index(request):
+    session_id = request.session.get("unique_session_id")
+
+    if not session_id:
+        unique_identifier = str(uuid.uuid4())
+        request.session["unique_session_id"] = unique_identifier
+        increment_unique_visitors()
+
     num_workers = models.Worker.objects.count()
     num_tasks = models.Task.objects.count()
     num_completed_tasks = models.Task.objects.filter(is_completed=True).count()
@@ -28,9 +37,14 @@ def index(request):
         "num_workers": num_workers,
         "num_tasks": num_tasks,
         "num_completed_tasks": num_completed_tasks,
-        "num_teams": num_teams
+        "num_teams": num_teams,
+        "unique_visitors_count": get_unique_visitors_count()
     }
     return render(request, 'pages/index.html', context=context)
+
+
+def get_unique_visitors_count():
+    return VisitorCounter.objects.first().count
 
 
 class TeamListView(generic.ListView):
