@@ -8,14 +8,16 @@ from django.urls import reverse_lazy
 from django.views import generic, View
 
 from task_manager import models
-from task_manager.forms import (WorkerForm,
-                                WorkerCreationForm,
-                                CustomAuthenticationForm,
-                                TeamSearchForm,
-                                WorkerSearchForm,
-                                TaskSearchForm,
-                                TaskForm,
-                                AddWorkerForm)
+from task_manager.forms import (
+    WorkerForm,
+    WorkerCreationForm,
+    CustomAuthenticationForm,
+    TeamSearchForm,
+    WorkerSearchForm,
+    TaskSearchForm,
+    TaskForm,
+    AddWorkerForm,
+)
 from task_manager.models import increment_unique_visitors, VisitorCounter
 
 
@@ -37,9 +39,9 @@ def index(request):
         "num_tasks": num_tasks,
         "num_completed_tasks": num_completed_tasks,
         "num_teams": num_teams,
-        "unique_visitors_count": get_unique_visitors_count()
+        "unique_visitors_count": get_unique_visitors_count(),
     }
-    return render(request, 'pages/index.html', context=context)
+    return render(request, "pages/index.html", context=context)
 
 
 def get_unique_visitors_count():
@@ -123,10 +125,8 @@ class WorkerCreateView(generic.CreateView):
     template_name = "pages/user-form.html"
 
     def get_success_url(self):
-        return reverse_lazy(
-            "task_manager:worker_detail",
-            args=[self.object.pk]
-        )
+        return reverse_lazy("task_manager:worker_detail",
+                            args=[self.object.pk])
 
 
 class WorkerUpdateView(generic.UpdateView):
@@ -138,10 +138,8 @@ class WorkerUpdateView(generic.UpdateView):
         return models.Worker.objects.get(pk=self.kwargs["pk"])
 
     def get_success_url(self):
-        return reverse_lazy(
-            "task_manager:worker_detail",
-            args=[self.object.pk]
-        )
+        return reverse_lazy("task_manager:worker_detail",
+                            args=[self.object.pk])
 
 
 class WorkerDeleteView(generic.DeleteView):
@@ -203,22 +201,22 @@ class TaskTypeDeleteView(generic.DeleteView):
 
 
 class AuthSigninView(View):
-    template_name = 'auth_signin.html'
+    template_name = "auth_signin.html"
 
     def get(self, request, *args, **kwargs):
         form = CustomAuthenticationForm()
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {"form": form})
 
     def post(self, request, *args, **kwargs):
         form = CustomAuthenticationForm(request, data=request.POST)
         if form.is_valid():
-            username = form.cleaned_data.get('username')
-            password = form.cleaned_data.get('password')
+            username = form.cleaned_data.get("username")
+            password = form.cleaned_data.get("password")
             user = authenticate(request, username=username, password=password)
             if user is not None:
                 login(request, user)
-                return redirect('task_manager:index')
-        return render(request, self.template_name, {'form': form})
+                return redirect("task_manager:index")
+        return render(request, self.template_name, {"form": form})
 
 
 class TaskListView(generic.ListView):
@@ -273,14 +271,14 @@ class AddWorkerToTaskView(View):
         task = get_object_or_404(models.Task, id=task_id)
         form = AddWorkerForm(instance=task)
         return render(request, self.template_name,
-                      {'form': form, 'task': task})
+                      {"form": form, "task": task})
 
     def post(self, request, task_id, *args, **kwargs):
         task = get_object_or_404(models.Task, id=task_id)
         form = AddWorkerForm(request.POST, instance=task)
         if form.is_valid():
-            workers = form.cleaned_data['workers']
+            workers = form.cleaned_data["workers"]
             task.workers.set(workers)
             return HttpResponseRedirect(self.success_url)
         return render(request, self.template_name,
-                      {'form': form, 'task': task})
+                      {"form": form, "task": task})

@@ -1,4 +1,4 @@
-from django.contrib.auth.models import AbstractUser, Group, Permission
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils import timezone
 
@@ -12,9 +12,9 @@ class TaskType(models.Model):
 
 class Task(models.Model):
     PRIORITY_CHOICES = (
-        ('low', 'Low Priority'),
-        ('medium', 'Medium Priority'),
-        ('high', 'High Priority'),
+        ("low", "Low Priority"),
+        ("medium", "Medium Priority"),
+        ("high", "High Priority"),
     )
     name = models.CharField(max_length=255, unique=False)
     description = models.TextField()
@@ -23,7 +23,7 @@ class Task(models.Model):
     priority = models.CharField(
         max_length=10,
         choices=PRIORITY_CHOICES,
-        default='medium',
+        default="medium",
     )
     task_type = models.ForeignKey(TaskType, on_delete=models.CASCADE)
 
@@ -44,7 +44,7 @@ class Team(models.Model):
 
 class Worker(AbstractUser):
     position = models.ForeignKey(Position, on_delete=models.CASCADE)
-    task = models.ManyToManyField(Task, blank=True, related_name='workers')
+    task = models.ManyToManyField(Task, blank=True, related_name="workers")
     team = models.ForeignKey(Team, blank=True,
                              on_delete=models.SET_NULL, null=True)
 

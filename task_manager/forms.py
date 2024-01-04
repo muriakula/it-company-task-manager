@@ -1,7 +1,9 @@
 from django import forms
-from django.contrib.auth.forms import (UserCreationForm,
-                                       UserChangeForm,
-                                       AuthenticationForm)
+from django.contrib.auth.forms import (
+    UserCreationForm,
+    UserChangeForm,
+    AuthenticationForm,
+)
 
 from .models import Worker, Task, Team
 
@@ -10,23 +12,27 @@ class WorkerCreationForm(UserCreationForm):
     class Meta:
         model = Worker
         fields = UserCreationForm.Meta.fields + (
-            "position",
-            "first_name",
-            "last_name"
+            "position", "first_name", "last_name"
         )
 
 
 class WorkerForm(UserChangeForm):
     class Meta:
         model = Worker
-        exclude = ["user_permissions", "groups", "is_superuser",
-                   "last_login", "is_staff", "date_joined"]
+        exclude = [
+            "user_permissions",
+            "groups",
+            "is_superuser",
+            "last_login",
+            "is_staff",
+            "date_joined",
+        ]
 
 
 class CustomAuthenticationForm(AuthenticationForm):
     class Meta:
         model = Worker
-        fields = ['username', 'password']
+        fields = ["username", "password"]
 
 
 class TeamSearchForm(forms.Form):
@@ -34,7 +40,7 @@ class TeamSearchForm(forms.Form):
         max_length=255,
         required=False,
         label="",
-        widget=forms.TextInput(attrs={"placeholder": "Search"})
+        widget=forms.TextInput(attrs={"placeholder": "Search"}),
     )
 
 
@@ -43,9 +49,7 @@ class WorkerSearchForm(forms.Form):
         max_length=255,
         required=False,
         label="",
-        widget=forms.TextInput(
-            attrs={"placeholder": "Search"}
-        )
+        widget=forms.TextInput(attrs={"placeholder": "Search"}),
     )
 
 
@@ -54,9 +58,7 @@ class TaskSearchForm(forms.Form):
         max_length=255,
         required=False,
         label="",
-        widget=forms.TextInput(
-            attrs={"placeholder": "Search"}
-        )
+        widget=forms.TextInput(attrs={"placeholder": "Search"}),
     )
 
 
@@ -64,9 +66,7 @@ class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
         fields = "__all__"
-        widgets = {
-            "deadline": forms.DateInput(attrs={"type": "date"})
-        }
+        widgets = {"deadline": forms.DateInput(attrs={"type": "date"})}
 
 
 class AddWorkerForm(forms.ModelForm):
@@ -82,7 +82,7 @@ class AddWorkerForm(forms.ModelForm):
             queryset=Worker.objects.filter(team__isnull=True),
             widget=forms.CheckboxSelectMultiple,
             label="Workers without a Team",
-            required=False
+            required=False,
         )
 
         teams = Team.objects.all()
@@ -94,7 +94,7 @@ class AddWorkerForm(forms.ModelForm):
                 queryset=team_workers,
                 widget=forms.CheckboxSelectMultiple,
                 label=f"Workers in {team.name}",
-                required=False
+                required=False,
             )
 
             if instance:
@@ -104,7 +104,7 @@ class AddWorkerForm(forms.ModelForm):
         self.fields["select_all_team"] = forms.BooleanField(
             required=False,
             initial=False,
-            widget=forms.CheckboxInput(attrs={"class": "select-all-team"})
+            widget=forms.CheckboxInput(attrs={"class": "select-all-team"}),
         )
 
     def clean(self):

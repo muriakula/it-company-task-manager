@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from task_manager.models import Position, TaskType, Team, Worker
+from task_manager.models import Position, Team, Worker
 
 
 class TeamListViewTest(TestCase):
@@ -35,20 +35,20 @@ class WorkerListViewTest(TestCase):
         self.position = Position.objects.create(name="Position Test")
         self.team = Team.objects.create(name="Team Test")
         self.worker1 = Worker.objects.create(
-            username='john_doe',
-            first_name='John',
-            last_name='Doe',
-            email='john@example.com',
+            username="john_doe",
+            first_name="John",
+            last_name="Doe",
+            email="john@example.com",
             position=self.position,
-            team=self.team
+            team=self.team,
         )
         self.worker2 = Worker.objects.create(
-            username='jane_doe',
-            first_name='Jane',
-            last_name='Doe',
-            email='jane@example.com',
+            username="jane_doe",
+            first_name="Jane",
+            last_name="Doe",
+            email="jane@example.com",
             position=self.position,
-            team=self.team
+            team=self.team,
         )
 
     def test_view_url_exists(self):
@@ -56,7 +56,7 @@ class WorkerListViewTest(TestCase):
         self.assertTemplateUsed(self.response, "pages/workers_list.html")
 
     def test_view_displays_workers_list(self):
-        response = self.client.get("/workers/", {'search_query': ''})
+        response = self.client.get("/workers/", {"search_query": ""})
         self.assertContains(response, "John")
         self.assertContains(response, "Jane")
 
@@ -64,6 +64,6 @@ class WorkerListViewTest(TestCase):
         self.assertContains(self.response, "Search")
 
     def test_search_works(self):
-        response = self.client.get("/workers/", {'search_query': 'Jane'})
+        response = self.client.get("/workers/", {"search_query": "Jane"})
         self.assertContains(response, "Jane")
         self.assertNotContains(response, "John")
