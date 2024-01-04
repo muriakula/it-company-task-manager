@@ -19,7 +19,6 @@ from task_manager.forms import (WorkerForm,
 from task_manager.models import increment_unique_visitors, VisitorCounter
 
 
-# Create your views here.
 def index(request):
     session_id = request.session.get("unique_session_id")
 
