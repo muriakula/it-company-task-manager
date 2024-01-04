@@ -1,0 +1,86 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col-md-12">
+          <div class="page-header-title">
+            <h5 class="m-b-10">All Tasks</h5>
+          </div>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url "task_manager:index" %}"><i class="feather icon-home"></i></a>
+            </li>
+            <li class="breadcrumb-item"><a href="#">Tasks</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-body table-border-style">
+          <div class="table-responsive">
+            {% if task_list %}
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Task</th>
+                  <th>Priority</th>
+                  <th>Deadline</th>
+                  <th>Workers</th>
+                  <th>Is completed</th>
+                  <th>Delete</th>
+                </tr>
+                </thead>
+                {% for task in task_list %}
+                  <tbody>
+                  <tr>
+                    <td>{{ task.id }}</td>
+                    <td><a href="{% url "task_manager:task_update" pk=task.pk %}">{{ task.name }}</a>
+                      <br>({{ task.task_type }})</td>
+                    <td>{{ task.priority }}</td>
+                    <td>{{ task.deadline }}</td>
+                    <td>
+                      {% for worker in task.workers.all %}
+                        {{ worker.first_name }} {{ worker.last_name }}
+                        {% if worker.team%}({{ worker.team.name }}){% endif %}
+                        {% if not forloop.last %} <br> {% endif %}
+                        {% endfor %}
+                      <a href="{% url "task_manager:add_worker_to_task" task_id=task.pk %}"><br>Add worker</a>
+                    </td>
+                    <td>{{ task.is_completed }}</td>
+                    <td><a href="{% url "task_manager:task_delete" pk=task.pk%}"
+                           style="text-decoration: none; color: white">
+                      <button type="button" class="btn btn-primary btn-sm rounded m-0 float-end">
+                        <i class="feather icon-trash"></i>
+                      </button>
+                    </a></td>
+                  </tr>
+                  </tbody>
+                {% endfor %}
+              </table>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Search task</h5>
+          {% include "includes/search_form.html" %}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Create New Task</h5>
+          <p class="card-text">Click the button below to create a new task.</p>
+          <a href="{% url "task_manager:task_create" %}" class="btn btn-primary">Create Task</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

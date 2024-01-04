@@ -1,0 +1,90 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col-md-12">
+          <div class="page-header-title">
+            <h5 class="m-b-10">All Workers</h5>
+          </div>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url "task_manager:index" %}"><i class="feather icon-home"></i></a>
+            </li>
+            <li class="breadcrumb-item"><a href="#">Workers</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-9">
+      <div class="card">
+        <div class="card-body table-border-style">
+          <div class="table-responsive">
+            {% if workers_list %}
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Position</th>
+                  <th>Team</th>
+                  <th>Update</th>
+                  <th>Delete</th>
+                </tr>
+                </thead>
+                {% for worker in workers_list %}
+                  <tbody>
+                  <tr>
+                    <td>{{ worker.id }}</td>
+                    <td><a
+                        href="{% url "task_manager:worker_detail" pk=worker.pk %}">{{ worker.first_name }} {{ worker.last_name }}</a>
+                    </td>
+                    <td>{{ worker.email }}</td>
+                    <td>{{ worker.position }}</td>
+                    <td>
+                      {% for team in worker.team_members.all %}
+                        {{ team.name }}
+                        {% if not forloop.last %}<br> {% endif %}
+                      {% endfor %}
+                    </td>
+                    <td><a href="{% url "task_manager:worker_update" pk=worker.pk %}"
+                           style="text-decoration: none; color: white">
+                      <button type="button" class="btn btn-primary btn-sm rounded m-0 float-end">
+                        <i class="feather icon-edit"></i>
+                      </button>
+                    </a></td>
+                    <td><a href="{% url "task_manager:worker_delete" pk=worker.pk %}"
+                           style="text-decoration: none; color: white">
+                      <button type="button" class="btn btn-primary btn-sm rounded m-0 float-end">
+                        <i class="feather icon-trash"></i>
+                      </button>
+                    </a></td>
+                  </tr>
+                  </tbody>
+                {% endfor %}
+              </table>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Search</h5>
+          {% include "includes/search_form.html" %}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Add new worker</h5>
+          <p class="card-text">Click the button below to add a new worker.</p>
+          <a href="{% url "task_manager:worker_create" %}" class="btn btn-primary">Add Worker</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col-md-12">
+          <div class="page-header-title">
+            <h5 class="m-b-10">All Teams</h5>
+          </div>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url "task_manager:index" %}"><i class="feather icon-home"></i></a>
+            </li>
+            <li class="breadcrumb-item"><a href="#">Workers</a></li>
+            <li class="breadcrumb-item"><a href="#">Teams</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+<div class="row">
+  <div class="col-md-6">
+    <div class="card">
+      <div class="card-body table-border-style">
+        <div class="table-responsive">
+          {% if team_list %}
+            <table class="table">
+              <thead>
+              <tr>
+                <th>#</th>
+                <th>Team Name</th>
+                <th>Team Members</th>
+                <th>Update</th>
+                <th>Delete</th>
+              </tr>
+              </thead>
+              {% for team in team_list %}
+                <tbody>
+                <tr>
+                  <td>{{ team.id }}</td>
+                  <td><a href="">{{ team.name }}</a></td>
+                  <td>{{ team.team_members.count }}</td>
+                  <td><a href="{% url 'task_manager:team_update' pk=team.pk %}"style="text-decoration: none; color: white">
+                      <button type="button" class="btn btn-primary btn-sm rounded m-0 float-end">
+                        <i class="feather icon-edit"></i>
+                      </button></a></td>
+                  <td><a href="{% url 'task_manager:team_delete' pk=team.pk %}"style="text-decoration: none; color: white">
+                      <button type="button" class="btn btn-primary btn-sm rounded m-0 float-end">
+                        <i class="feather icon-trash"></i>
+                      </button></a></td>
+                </tr>
+                </tbody>
+              {% endfor %}
+            </table>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Search your team</h5>
+          {% include "includes/search_form.html" %}
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Create New Team</h5>
+          <p class="card-text">Click the button below to create a new team.</p>
+          <a href="{% url 'task_manager:team_create' %}" class="btn btn-primary">Create Team</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

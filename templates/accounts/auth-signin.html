@@ -1,0 +1,30 @@
+{% extends 'layouts/auth_base.html' %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% block content %}
+  <!-- [ auth-signin ] start -->
+  <div class="auth-wrapper">
+    <div class="auth-content">
+      <div class="card">
+        <div class="row align-items-center text-center">
+          <div class="col-md-12">
+            <div class="card-body">
+              <img src="{% static 'assets/images/logo-dark.png' %}" alt="" class="img-fluid mb-4">
+              <h4 class="mb-3 f-w-400">Signin</h4>
+              <form method="post" action="{% url 'task_manager:auth_signin' %}">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-block btn-primary mt-2 mb-4">Signin</button>
+                <p class="mb-2 text-muted">Forgot password? <a href="" class="f-w-400">Reset</a></p>
+                <p class="mb-0 text-muted">Don’t have an account? <a href="{% url 'task_manager:auth_signup' %}"
+                                                                     class="f-w-400">Signup</a></p>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  </div>
+  <!-- [ auth-signin ] end -->
+{% endblock content %}

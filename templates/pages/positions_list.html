@@ -1,0 +1,74 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% block content %}
+  <div class="page-header">
+    <div class="page-block">
+      <div class="row align-items-center">
+        <div class="col-md-12">
+          <div class="page-header-title">
+            <h5 class="m-b-10">All Positions</h5>
+          </div>
+          <ul class="breadcrumb">
+            <li class="breadcrumb-item"><a href="{% url "task_manager:index" %}"><i class="feather icon-home"></i></a>
+            </li>
+            <li class="breadcrumb-item"><a href="#">Workers</a></li>
+            <li class="breadcrumb-item"><a href="#">Positions</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body table-border-style">
+          <div class="table-responsive">
+            {% if positions_list %}
+              <table class="table">
+                <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Position</th>
+                  <th>Workers</th>
+                  <th>Update</th>
+                  <th>Delete</th>
+                </tr>
+                </thead>
+                {% for position in positions_list %}
+                  <tbody>
+                  <tr>
+                    <td>{{ position.id }}</td>
+                    <td><a href="">{{ position.name }}</a></td>
+                    <td>{{ position.worker_set.count }}</td>
+                    <td><a href="{% url "task_manager:position_update" pk=position.pk %}"
+                           style="text-decoration: none; color: white">
+                      <button type="button" class="btn btn-primary btn-sm rounded m-0 float-end">
+                        <i class="feather icon-edit"></i>
+                      </button>
+                    </a></td>
+                    <td><a href="{% url "task_manager:position_delete" pk=position.pk %}"
+                           style="text-decoration: none; color: white">
+                      <button type="button" class="btn btn-primary btn-sm rounded m-0 float-end">
+                        <i class="feather icon-trash"></i>
+                      </button>
+                    </a></td>
+                  </tr>
+                  </tbody>
+                {% endfor %}
+              </table>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <h5 class="card-title">Create New Position</h5>
+          <p class="card-text">Click the button below to create a new position.</p>
+          <a href="{% url "task_manager:position_create" %}" class="btn btn-primary">Create Position</a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
