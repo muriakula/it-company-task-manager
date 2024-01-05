@@ -60,8 +60,12 @@ class Worker(AbstractUser):
 class VisitorCounter(models.Model):
     count = models.IntegerField(default=0)
 
+    @classmethod
+    def increment_unique_visitors(cls):
+        counter, created = cls.objects.get_or_create(pk=1)
+        counter.count += 1
+        counter.save()
 
-def increment_unique_visitors():
-    counter, created = VisitorCounter.objects.get_or_create(pk=1)
-    counter.count += 1
-    counter.save()
+    @classmethod
+    def get_unique_visitors_count(cls):
+        return cls.objects.first().count

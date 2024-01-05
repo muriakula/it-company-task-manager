@@ -6,8 +6,7 @@ from task_manager.models import (
     Position,
     Team,
     Worker,
-    VisitorCounter,
-    increment_unique_visitors,
+    VisitorCounter
 )
 
 
@@ -69,12 +68,12 @@ class WorkerModelTest(ModelTest):
 class VisitorCounterModelTest(TestCase):
     def test_increment_unique_visitors_creates_counter_if_not_exists(self):
         VisitorCounter.objects.all().delete()
-        increment_unique_visitors()
+        VisitorCounter.increment_unique_visitors()
         self.assertEqual(VisitorCounter.objects.count(), 1)
 
     def test_increment_unique_visitors_increments_counter(self):
         VisitorCounter.objects.create(pk=1, count=0)
         initial_count = VisitorCounter.objects.get(pk=1).count
-        increment_unique_visitors()
+        VisitorCounter.increment_unique_visitors()
         updated_count = VisitorCounter.objects.get(pk=1).count
         self.assertEqual(updated_count, initial_count + 1)
