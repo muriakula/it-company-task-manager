@@ -3,7 +3,7 @@ from django.urls import path
 from task_manager import views
 
 urlpatterns = [
-    path("", views.index, name="index"),
+    path("", views.IndexView.as_view(), name="index"),
     path("teams/", views.TeamListView.as_view(), name="team_list"),
     path("teams/create/", views.TeamCreateView.as_view(), name="team_create"),
     path(
@@ -18,12 +18,12 @@ urlpatterns = [
          views.WorkerListView.as_view(),
          name="worker_list"
          ),
-    path("workers/<int:pk>",
+    path("workers/<int:pk>/",
          views.WorkerDetailView.as_view(),
          name="worker_detail"
          ),
     path(
-        "workers/<int:pk>/update",
+        "workers/<int:pk>/update/",
         views.WorkerUpdateView.as_view(),
         name="worker_update",
     ),
@@ -33,7 +33,7 @@ urlpatterns = [
         name="worker_create"
     ),
     path(
-        "workers/<int:pk>/delete",
+        "workers/<int:pk>/delete/",
         views.WorkerDeleteView.as_view(),
         name="worker_delete",
     ),

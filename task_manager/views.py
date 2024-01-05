@@ -18,34 +18,33 @@ from task_manager.forms import (
     TaskForm,
     AddWorkerForm,
 )
-from task_manager.models import increment_unique_visitors, VisitorCounter
+from task_manager.models import VisitorCounter
 
 
-def index(request):
-    session_id = request.session.get("unique_session_id")
+class IndexView(View):
+    template_name = "pages/index.html"
 
-    if not session_id:
-        unique_identifier = str(uuid.uuid4())
-        request.session["unique_session_id"] = unique_identifier
-        increment_unique_visitors()
+    def get(self, request, *args, **kwargs):
+        session_id = request.session.get("unique_session_id")
 
-    num_workers = models.Worker.objects.count()
-    num_tasks = models.Task.objects.count()
-    num_completed_tasks = models.Task.objects.filter(is_completed=True).count()
-    num_teams = models.Team.objects.count()
+        if not session_id:
+            unique_identifier = str(uuid.uuid4())
+            request.session["unique_session_id"] = unique_identifier
+            VisitorCounter.increment_unique_visitors()
 
-    context = {
-        "num_workers": num_workers,
-        "num_tasks": num_tasks,
-        "num_completed_tasks": num_completed_tasks,
-        "num_teams": num_teams,
-        "unique_visitors_count": get_unique_visitors_count(),
-    }
-    return render(request, "pages/index.html", context=context)
+        num_workers = models.Worker.objects.count()
+        num_tasks = models.Task.objects.count()
+        num_completed_tasks = models.Task.objects.filter(is_completed=True).count()
+        num_teams = models.Team.objects.count()
 
-
-def get_unique_visitors_count():
-    return VisitorCounter.objects.first().count
+        context = {
+            "num_workers": num_workers,
+            "num_tasks": num_tasks,
+            "num_completed_tasks": num_completed_tasks,
+            "num_teams": num_teams,
+            "unique_visitors_count": VisitorCounter.get_unique_visitors_count(),
+        }
+        return render(request, "pages/index.html", context=context)
 
 
 class TeamListView(generic.ListView):
